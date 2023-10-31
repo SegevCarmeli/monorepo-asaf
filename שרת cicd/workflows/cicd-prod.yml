@@ -1,0 +1,20 @@
+name: PROD CI/CD
+
+on:
+  push:
+    branches:
+      - prod
+  workflow_dispatch:
+
+jobs:
+  trigger-cicd:
+    uses: ./.github/workflows/build-deploy-refresh-cache.yaml
+    with:
+      docker_build_context: .
+      environment_name: prod
+      docker_image_name_suffix: prod
+      k8s_namespace: mynet-prod
+      k8s_deployment: mynet-item-compositor
+      runner_name: hr
+    secrets:
+      AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
