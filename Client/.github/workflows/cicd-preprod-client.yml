@@ -1,0 +1,20 @@
+name: PREPROD CI/CD
+
+on:
+  push:
+    branches:
+      - preprod
+  workflow_dispatch:
+
+jobs:
+  trigger-cicd:
+    uses: ./.github/workflows/build-deploy-refresh-cache.yaml
+    with:
+      docker_build_context: .
+      environment_name: preprod
+      docker_image_name_suffix: preprod
+      k8s_namespace: mynet-preprod
+      k8s_deployment: mynet-client
+      runner_name: hr
+    secrets:
+      AWS_CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
