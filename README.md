@@ -1,2 +1,2 @@
 # monorepo-asaf
-noam brite is best
+Full pipeline for Shachar unit in IDF
