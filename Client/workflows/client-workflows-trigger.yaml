@@ -1,0 +1,39 @@
+name: Trigger Services Workflow
+#change down the user and everything
+on:
+  push:
+    paths:
+      - 'client/**'  # Change to the actual path of your services directory
+
+jobs:
+  trigger-services:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Trigger Service Workflows
+        run: |
+          echo "Triggering service workflows..."
+          
+          # Trigger Service 1 Workflow
+          - name: Trigger Service 1
+            run: |
+              gh workflow run build-deploy-refresh-cache-client.yaml -n service1 -r yourusername/your-repo
+
+          # Trigger Service 2 Workflow
+          - name: Trigger Service 2
+            run: |
+              gh workflow run build-devsecops-client.yaml -n service2 -r yourusername/your-repo
+
+          # Trigger Service 3 Workflow
+          - name: Trigger Service 3
+            run: |
+              gh workflow run cicd-dev-client.yaml -n service3 -r yourusername/your-repo
+
+          # Trigger Service 4 Workflow
+          - name: Trigger Service 4
+            run: |
+              gh workflow run cicd-preprod-client.yml -n service4 -r yourusername/your-repo
+
+          echo "Service workflows triggered."
