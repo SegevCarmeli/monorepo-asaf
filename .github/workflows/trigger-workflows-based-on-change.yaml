@@ -20,7 +20,7 @@ jobs:
             echo "Changes detected in the 'Server/**' directory. Triggering server workflows..." 
             - name: Trigger Server Workflows
               run: |
-                gh workflow run server-workflows-trigger.yaml
+                gh workflow run Server/workflows/server-workflows-trigger.yaml
             echo "Server workflows triggered."
           fi
 
@@ -28,6 +28,6 @@ jobs:
             echo "Changes detected in the 'CLient/**' directory. Triggering client workflows..."
             - name: Trigger Client Workflows
               run: |
-                gh workflow run client-workflows-trigger.yaml
+                gh workflow run Client/workflows/client-workflows-trigger.yaml
             echo "Client workflows triggered."
           fi

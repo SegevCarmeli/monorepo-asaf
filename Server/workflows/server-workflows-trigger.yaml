@@ -7,9 +7,9 @@ jobs:
   trigger-services:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Service Workflows
+      - name: Trigger Server Workflows
         run: |
-          echo "Triggering service workflows..."
+          echo "Triggering Server workflows..."
           
           # Trigger Service 1 Workflow
           - name: Trigger Service 1

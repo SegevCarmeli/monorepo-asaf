@@ -1,4 +1,4 @@
-name: Trigger Client Workflow
+name: Trigger Client Workflows
 
 on:
   workflow_dispatch:
