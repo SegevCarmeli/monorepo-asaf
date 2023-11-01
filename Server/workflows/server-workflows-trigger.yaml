@@ -1,4 +1,4 @@
-name: Trigger Services Workflow
+name: Trigger Server Workflows
 
 on:
   workflow_dispatch:
