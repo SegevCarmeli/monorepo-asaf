@@ -1,33 +1,37 @@
-# this file will point to another file containing the flows needed for the change
-name: Trigger workflows based on change 
+name: Check Changes in Client/Server
 
 on:
   push:
     paths:
-      - 'Server/**'  
-      - 'Client/**'  
+      - 'Server/**'
+      - 'Client/**'
+
 
 jobs:
-  trigger-server-or-client-workflows:
+  check-changes:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Trigger Server or Client Workflows
+      - name: Get changed directories
+        id: changes
         run: |
-          if [[ -n $(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'Server/**') ]]; then
-            echo "Changes detected in the 'Server/**' directory. Triggering server workflows..." 
-            - name: Trigger Server Workflows
-              run: |
-                gh workflow run Server/workflows/server-workflows-trigger.yaml
-            echo "Server workflows triggered."
-          fi
+          echo "CHANGED_DIRECTORIES=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/DigitalIDF/MyNet/commits/${{ github.sha }}" | \
+            jq -r '.files[] | select(.filename | startswith("Client/") or startswith("Server/")) | .filename | capture("^(?<directory>Client|Server)") | .directory' | sort -u)" >> "$GITHUB_ENV"
+          echo "Changed directories: $CHANGED_DIRECTORIES" # For debugging purposes
 
-          if [[ -n $(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'Client/**') ]]; then
-            echo "Changes detected in the 'CLient/**' directory. Triggering client workflows..."
-            - name: Trigger Client Workflows
-              run: |
-                gh workflow run Client/workflows/client-workflows-trigger.yaml
-            echo "Client workflows triggered."
-          fi
+
+      - name: Debug Changed Directories
+        run: |
+          echo "CHANGED_DIRECTORIES: $CHANGED_DIRECTORIES"
+
+      - name: Check for Client Changes and trigger workflows
+        if: ${{ env.CHANGED_DIRECTORIES == 'Client' }}
+        run: |
+          echo "Changes detected in the Client directory" 
+          gh workflow run Client/workflows/client-workflows-trigger.yaml
+      - name: Check for Server Changes and trigger workflows
+        if: "contains('$CHANGED_DIRECTORIES', 'Server')"
+        run: |
+          echo "Changes detected in the Server directory"
+          gh workflow run Server/workflows/server-workflows-trigger.yaml
