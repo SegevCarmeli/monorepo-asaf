@@ -6,6 +6,8 @@ on:
       - 'Server/**'
       - 'Client/**'
 
+env:
+  GH_TOKEN: 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
 
 jobs:
   check-changes:
@@ -29,9 +31,11 @@ jobs:
         if: ${{ env.CHANGED_DIRECTORIES == 'Client' }}
         run: |
           echo "Changes detected in the Client directory" 
+          cd Client
           gh workflow run Client/workflows/client-workflows-trigger.yaml
       - name: Check for Server Changes and trigger workflows
         if: "contains('$CHANGED_DIRECTORIES', 'Server')"
         run: |
           echo "Changes detected in the Server directory"
+          cd Server
           gh workflow run Server/workflows/server-workflows-trigger.yaml
